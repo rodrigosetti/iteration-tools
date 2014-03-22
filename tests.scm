@@ -49,7 +49,7 @@
 
 (let ((accum (list)))
 
-    (for x in (take 10 fibonacci)
+    (for x in (iter-take 10 fibonacci)
          (accumulate accum x))
 
     (test-equal "take 10 from infinite iterator"
@@ -59,7 +59,7 @@
 
 (let ((accum (list)))
 
-(for x in (take 10 (drop 10 fibonacci))
+(for x in (iter-take 10 (iter-drop 10 fibonacci))
      (accumulate accum x))
 
     (test-equal "take 10 of drop 10 from infinite iterator"
@@ -68,7 +68,7 @@
 
 (let ((accum (list)))
 
-  (for x in (count 0 2 50)
+  (for x in (iter-count 0 2 50)
        (accumulate accum x))
 
   (test-equal "count from 0 to 50 (step 2)"

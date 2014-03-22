@@ -1,6 +1,6 @@
 (define-module (itertools))
 (use-modules (srfi srfi-1))
-(export generator iter next end? for take drop count)
+(export generator iter next end? for iter-take iter-drop iter-count)
 
 ; ***************************************
 ; *************** CORE ******************
@@ -60,7 +60,7 @@
                   (with-syntax ([yield (datum->syntax #'yield-from 'yield)])
                                #'(for e in gen (yield e)))))))
 
-(define (take n gen)
+(define (iter-take n gen)
   (define it (iter gen))
   (generator (let loop ((val (next it))
                         (m n))
@@ -68,7 +68,7 @@
                  (yield val)
                  (loop (next it) (- m 1))))))
 
-(define (drop n gen)
+(define (iter-drop n gen)
   (define it (iter gen))
   (generator (let loop ((val (next it))
                         (m n))
@@ -77,11 +77,11 @@
                    (yield val))
                  (loop (next it) (- m 1))))))
 
-(define count (case-lambda
-                (() (count 0 1 '()))
-                ((start) (count start 1 '()))
-                ((start step) (count start step '()))
+(define iter-count (case-lambda
+                (() (iter-count 0 1 '()))
+                ((start) (iter-count start 1 '()))
+                ((start step) (iter-count start step '()))
                 ((start step stop) (generator (when (or (null? stop) (< start stop))
                                                 (yield start)
-                                                (yield-from (count (+ start step) step stop)))))))
+                                                (yield-from (iter-count (+ start step) step stop)))))))
 
