@@ -147,5 +147,14 @@
               '(1 2 3 4)
               accum))
 
+(let ((accum (list)))
+
+  (for x in (iter-list '(10 9 8 7 6 5 4 3 2 1))
+       (accumulate accum x))
+
+  (test-equal "transforms a list into a generator"
+              '(10 9 8 7 6 5 4 3 2 1)
+              accum))
+
 (test-end "itertools-test")
 

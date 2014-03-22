@@ -11,7 +11,7 @@
         iter-cycle
         iter-drop
         iter-filter
-        iter-gen
+        iter-list
         iter-map
         iter-repeat
         iter-take
@@ -148,4 +148,8 @@
 (define (iter-chain . gens)
   (generator
     (for-each (lambda (g) (yield-from g)) gens)))
+
+(define (iter-list lst)
+  (generator
+    (for-each yield lst)))
 
