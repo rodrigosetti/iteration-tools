@@ -120,5 +120,32 @@
               '(1 2 3 4 5 6 7 8 9 10 1 1 2 3 5 8 13 21 34 55)
               accum))
 
+(let ((accum (list)))
+
+  (for x in (iter-map (lambda (c) (* 2 c)) simple)
+       (accumulate accum x))
+
+  (test-equal "map simple generator to the doubles"
+              '(2 4 6 8 10 12 14 16 18 20)
+              accum))
+
+(let ((accum (list)))
+
+  (for x in (iter-filter (lambda (c) (= 0 (remainder c 2))) simple)
+       (accumulate accum x))
+
+  (test-equal "filter simple generator to the pairs"
+              '(2 4 6 8 10)
+              accum))
+
+(let ((accum (list)))
+
+  (for x in (iter-take-until (lambda (c) (= c 5)) simple)
+       (accumulate accum x))
+
+  (test-equal "take until is 5"
+              '(1 2 3 4)
+              accum))
+
 (test-end "itertools-test")
 

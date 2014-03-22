@@ -10,9 +10,12 @@
         iter-count
         iter-cycle
         iter-drop
+        iter-filter
         iter-gen
+        iter-map
         iter-repeat
         iter-take
+        iter-take-until
         iter-zip)
 
 ; ***************************************
@@ -82,6 +85,31 @@
         (unless (or (end? it) (<= m 0))
           (yield val)
           (loop (next it) (- m 1)))))))
+
+(define (iter-take-until test gen)
+  (generator
+    (let ((it (iter gen)))
+      (let loop ((val (next it)))
+        (unless (or (end? it) (test val))
+          (yield val)
+          (loop (next it)))))))
+
+(define (iter-filter pred gen)
+  (generator
+    (let ((it (iter gen)))
+      (let loop ((val (next it)))
+        (unless (end? it)
+          (when (pred val)
+            (yield val))
+          (loop (next it)))))))
+
+(define (iter-map f gen)
+  (generator
+    (let ((it (iter gen)))
+      (let loop ((val (next it)))
+        (unless (end? it)
+          (yield (f val))
+          (loop (next it)))))))
 
 (define (iter-drop n gen)
   (generator
