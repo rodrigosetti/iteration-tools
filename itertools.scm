@@ -6,6 +6,7 @@
         iter
         next
         yield-from
+        iter-chain
         iter-count
         iter-cycle
         iter-drop
@@ -115,4 +116,8 @@
 (define iter-repeat (case-lambda
                       ((value) (generator (let loop () (yield value) (loop))))
                       ((value times) (iter-take times (iter-repeat value)))))
+
+(define (iter-chain . gens)
+  (generator
+    (for-each (lambda (g) (yield-from g)) gens)))
 
