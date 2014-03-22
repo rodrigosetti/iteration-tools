@@ -10,6 +10,7 @@
         iter-cycle
         iter-drop
         iter-gen
+        iter-repeat
         iter-take
         iter-zip)
 
@@ -110,4 +111,8 @@
   (generator (let loop ()
                (yield-from gen)
                (loop))))
+
+(define iter-repeat (case-lambda
+                      ((value) (generator (let loop () (yield value) (loop))))
+                      ((value times) (iter-take times (iter-repeat value)))))
 

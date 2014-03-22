@@ -93,5 +93,23 @@
               '(1 2 3 4 5 1 2 3 4 5 1 2 3 4 5 1 2 3 4 5 1 2 3 4 5 1 2 3)
               accum))
 
+(let ((accum (list)))
+
+  (for x in (iter-take 10 (iter-repeat 7))
+       (accumulate accum x))
+
+  (test-equal "repeat infinitely"
+              '(7 7 7 7 7 7 7 7 7 7)
+              accum))
+
+(let ((accum (list)))
+
+  (for x in (iter-repeat 7 10)
+       (accumulate accum x))
+
+  (test-equal "repeat up to 10 times"
+              '(7 7 7 7 7 7 7 7 7 7)
+              accum))
+
 (test-end "itertools-test")
 
