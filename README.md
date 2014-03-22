@@ -5,7 +5,7 @@ of [Python's itertools library](http://docs.python.org/2/library/itertools.html)
 including syntax for [generators](https://wiki.python.org/moin/Generators),
 and [generator delegation](http://legacy.python.org/dev/peps/pep-0380/).
 
-It introduce the following syntactic constructs:
+It introduces the following syntactic constructs:
 
  * `(generator <expression>)` - evaluates to a new generator, than can be
    composed and used in `for` forms.
@@ -21,15 +21,15 @@ library.
 ## Example
 
 ```scheme
-    (define fibonacci
-      (generator (let loop ((a 1)
-                            (b 1))
-                   (yield a)
-                   (loop b (+ a b)))))
+(define fibonacci
+  (generator (let loop ((a 1)
+                        (b 1))
+               (yield a)
+               (loop b (+ a b)))))
 
-    (for x in (take 10 fibonacci)
-         (display x)
-         (newline))
+(for x in (take 10 fibonacci)
+     (display x)
+     (newline))
 ```
 
 Will output:
