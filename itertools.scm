@@ -1,6 +1,17 @@
 (define-module (itertools))
 (use-modules (srfi srfi-1))
-(export generator iter next end? for iter-take iter-drop iter-count iter-zip)
+(export generator
+        end?
+        for
+        iter
+        next
+        yield-from
+        iter-count
+        iter-cycle
+        iter-drop
+        iter-gen
+        iter-take
+        iter-zip)
 
 ; ***************************************
 ; *************** CORE ******************
@@ -47,10 +58,11 @@
 
 (define-syntax for
   (syntax-rules (in)
-                ((_ var in gen e1 e2 ...) (let ((it (iter gen)))
-                                            (let loop ((var (next it)))
-                                              (when (not (end? it))
-                                                e1 e2 ... (loop (next it))))))))
+                ((for var in gen e1 e2 ...) (let ((it (iter gen)))
+                                              (let loop ((var (next it)))
+                                                (unless (end? it)
+                                                  e1 e2 ...
+                                                  (loop (next it))))))))
 
 ; http://legacy.python.org/dev/peps/pep-0380/
 (define-syntax yield-from
@@ -61,21 +73,23 @@
                                #'(for e in gen (yield e)))))))
 
 (define (iter-take n gen)
-  (define it (iter gen))
-  (generator (let loop ((val (next it))
-                        (m n))
-               (unless (or (end? it) (<= m 0))
-                 (yield val)
-                 (loop (next it) (- m 1))))))
+  (generator
+    (let ((it (iter gen)))
+      (let loop ((val (next it))
+                 (m n))
+        (unless (or (end? it) (<= m 0))
+          (yield val)
+          (loop (next it) (- m 1)))))))
 
 (define (iter-drop n gen)
-  (define it (iter gen))
-  (generator (let loop ((val (next it))
-                        (m n))
-               (unless (end? it)
-                 (when (<= m 0)
-                   (yield val))
-                 (loop (next it) (- m 1))))))
+  (generator
+    (let ((it (iter gen)))
+      (let loop ((val (next it))
+                 (m n))
+        (unless (end? it)
+          (when (<= m 0)
+            (yield val))
+          (loop (next it) (- m 1)))))))
 
 (define iter-count (case-lambda
                 (() (iter-count 0 1 '()))
@@ -91,4 +105,9 @@
                (unless (any end? its)
                  (yield vals)
                  (loop (map next its))))))
+
+(define (iter-cycle gen)
+  (generator (let loop ()
+               (yield-from gen)
+               (loop))))
 

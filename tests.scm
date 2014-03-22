@@ -84,5 +84,14 @@
               '((1 1) (2 1) (3 2) (4 3) (5 5) (6 8) (7 13) (8 21) (9 34) (10 55))
               accum))
 
+(let ((accum (list)))
+
+  (for x in (iter-take 28 (iter-cycle (iter-take 5 simple)))
+       (accumulate accum x))
+
+  (test-equal "cycle the iterator"
+              '(1 2 3 4 5 1 2 3 4 5 1 2 3 4 5 1 2 3 4 5 1 2 3 4 5 1 2 3)
+              accum))
+
 (test-end "itertools-test")
 
