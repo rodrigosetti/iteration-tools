@@ -1,6 +1,6 @@
 (define-module (itertools))
 (use-modules (srfi srfi-1))
-(export generator iter next end? for iter-take iter-drop iter-count)
+(export generator iter next end? for iter-take iter-drop iter-count iter-zip)
 
 ; ***************************************
 ; *************** CORE ******************
@@ -64,7 +64,7 @@
   (define it (iter gen))
   (generator (let loop ((val (next it))
                         (m n))
-               (when (and (not (end? it)) (> m 0))
+               (unless (or (end? it) (<= m 0))
                  (yield val)
                  (loop (next it) (- m 1))))))
 
@@ -72,7 +72,7 @@
   (define it (iter gen))
   (generator (let loop ((val (next it))
                         (m n))
-               (when (not (end? it))
+               (unless (end? it)
                  (when (<= m 0)
                    (yield val))
                  (loop (next it) (- m 1))))))
@@ -84,4 +84,11 @@
                 ((start step stop) (generator (when (or (null? stop) (< start stop))
                                                 (yield start)
                                                 (yield-from (iter-count (+ start step) step stop)))))))
+
+(define (iter-zip . gens)
+  (define its (map iter gens))
+  (generator (let loop ((vals (map next its)))
+               (unless (any end? its)
+                 (yield vals)
+                 (loop (map next its))))))
 
